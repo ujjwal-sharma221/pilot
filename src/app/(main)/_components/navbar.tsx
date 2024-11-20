@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
+import { ReceiptText } from "lucide-react";
 
 import logo from "@/assets/logo.svg";
 
@@ -24,7 +25,15 @@ export function Navbar() {
               },
             },
           }}
-        />
+        >
+          <UserButton.MenuItems>
+            <UserButton.Link
+              href="/billing"
+              label="Biling"
+              labelIcon={<ReceiptText className="size-4" />}
+            ></UserButton.Link>
+          </UserButton.MenuItems>
+        </UserButton>
       </div>
     </header>
   );
