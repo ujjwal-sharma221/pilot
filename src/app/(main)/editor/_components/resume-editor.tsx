@@ -1,12 +1,31 @@
 "use client";
 
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 import { Spotlight } from "@/components/spotlight";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Steps } from "./steps";
+import FormBreadcrumbs from "./form-breadcrumbs";
+import { Footer } from "./footer";
+import { ResumeValues } from "@/lib/schemas/validatio-schema";
 
 export function ResumeEditor() {
+  const searchParams = useSearchParams();
+  const currentStep = searchParams.get("step") || Steps[0].key;
+
+  const [resumeData, setResumeData] = useState<ResumeValues>({});
+
+  const setStep = (key: string) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("step", key);
+    window.history.pushState(null, "", `?${newSearchParams.toString()}`);
+  };
+
+  const FormComponent = Steps.find(
+    (step) => step.key === currentStep,
+  )?.component;
+
   return (
     <div className="flex min-h-screen flex-col">
       <div className="relative flex items-center justify-center rounded-b border-b border-zinc-100 bg-white p-6">
@@ -24,29 +43,27 @@ export function ResumeEditor() {
       </div>
 
       <main className="relative flex-grow">
-        <div className="absolute inset-0 flex">
-          <div className="w-full md:w-1/2">left</div>
+        <div className="absolute inset-0 flex p-2">
+          <div className="w-full space-y-6 overflow-y-auto md:w-1/2">
+            <FormBreadcrumbs
+              currentStep={currentStep}
+              setCurrentStep={setStep}
+            />
+            {FormComponent && (
+              <FormComponent
+                resumeData={resumeData}
+                setResumeData={setResumeData}
+              />
+            )}
+          </div>
           <div className="grow md:border-r"></div>
-          <div className="hidden w-1/2 md:flex">right</div>
+          <div className="hidden w-1/2 md:flex">
+            <pre>{JSON.stringify(resumeData, null, 2)}</pre>
+          </div>
         </div>
       </main>
 
-      <footer className="sticky bottom-0 w-full bg-white px-3 py-5 shadow-md">
-        <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Button variant="secondary">Previous Step</Button>
-            <Button variant="shine">Next Step</Button>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="secondary" asChild>
-              <Link href="/resumes">Close</Link>
-            </Button>
-            <p className="font-mono text-sm text-muted-foreground opacity-0">
-              Saving...
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer currentStep={currentStep} setCurrentStep={setStep} />
     </div>
   );
 }
