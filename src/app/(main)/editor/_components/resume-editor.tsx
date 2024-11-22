@@ -9,12 +9,14 @@ import FormBreadcrumbs from "./form-breadcrumbs";
 import { Footer } from "./footer";
 import { ResumeValues } from "@/lib/schemas/validatio-schema";
 import { ResumePreviewSection } from "./resume-preview-section";
+import { cn } from "@/lib/utils";
 
 export function ResumeEditor() {
   const searchParams = useSearchParams();
   const currentStep = searchParams.get("step") || Steps[0].key;
 
   const [resumeData, setResumeData] = useState<ResumeValues>({});
+  const [resumePreview, setShowResumePreview] = useState(false);
 
   const setStep = (key: string) => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -44,7 +46,12 @@ export function ResumeEditor() {
 
       <main className="relative flex-grow">
         <div className="absolute inset-0 flex p-2">
-          <div className="w-full space-y-6 overflow-y-auto md:w-1/2">
+          <div
+            className={cn(
+              "w-full space-y-6 overflow-y-auto md:block md:w-1/2",
+              resumePreview && "hidden",
+            )}
+          >
             <FormBreadcrumbs
               currentStep={currentStep}
               setCurrentStep={setStep}
@@ -60,11 +67,17 @@ export function ResumeEditor() {
           <ResumePreviewSection
             resumeData={resumeData}
             setResumeData={setResumeData}
+            className={cn(resumePreview && "flex")}
           />
         </div>
       </main>
 
-      <Footer currentStep={currentStep} setCurrentStep={setStep} />
+      <Footer
+        currentStep={currentStep}
+        setCurrentStep={setStep}
+        showResumePreview={resumePreview}
+        setShowResumePreview={setShowResumePreview}
+      />
     </div>
   );
 }
