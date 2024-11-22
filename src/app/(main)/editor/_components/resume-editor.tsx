@@ -8,6 +8,7 @@ import { Steps } from "./steps";
 import FormBreadcrumbs from "./form-breadcrumbs";
 import { Footer } from "./footer";
 import { ResumeValues } from "@/lib/schemas/validatio-schema";
+import { ResumePreviewSection } from "./resume-preview-section";
 
 export function ResumeEditor() {
   const searchParams = useSearchParams();
@@ -56,9 +57,10 @@ export function ResumeEditor() {
             )}
           </div>
           <div className="grow md:border-r"></div>
-          <div className="hidden w-1/2 md:flex">
-            <pre>{JSON.stringify(resumeData, null, 2)}</pre>
-          </div>
+          <ResumePreviewSection
+            resumeData={resumeData}
+            setResumeData={setResumeData}
+          />
         </div>
       </main>
 
