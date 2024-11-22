@@ -50,6 +50,7 @@ export type WorkExperienceValues = z.infer<typeof workExperienceSchema>;
 export const resumeSchema = z.object({
   ...generalInfoSchema.shape,
   ...peronsalInfoSchema.shape,
+  ...workExperienceSchema.shape,
 });
 
 export type ResumeValues = Omit<z.infer<typeof resumeSchema>, "photo"> & {

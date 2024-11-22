@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { Spotlight } from "@/components/spotlight";
-import { cn } from "@/lib/utils";
 import { Steps } from "./steps";
 import FormBreadcrumbs from "./form-breadcrumbs";
 import { Footer } from "./footer";
