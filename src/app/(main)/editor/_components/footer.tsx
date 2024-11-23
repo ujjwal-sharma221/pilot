@@ -53,7 +53,11 @@ export function Footer({
           className="md:hidden"
           title={showResumePreview ? "Show Input Form" : "Show Resume Preview"}
         >
-          {showResumePreview ? <PenLineIcon /> : <FileUser />}
+          {showResumePreview ? (
+            <PenLineIcon className="text-muted-foreground" />
+          ) : (
+            <FileUser className="text-muted-foreground" />
+          )}
         </Button>
         <div className="flex items-center gap-3">
           <Button variant="secondary" asChild>

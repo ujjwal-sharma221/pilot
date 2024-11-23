@@ -2,6 +2,24 @@ import { useFieldArray, useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GripHorizontal } from "lucide-react";
 import { useEffect } from "react";
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { CSS } from "@dnd-kit/utilities";
 
 import { EditorFormProps } from "@/lib/types/form-types";
 import {
@@ -17,6 +35,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function EducationForm({ resumeData, setResumeData }: EditorFormProps) {
   const form = useForm<EducationValues>({
@@ -39,10 +58,29 @@ export function EducationForm({ resumeData, setResumeData }: EditorFormProps) {
     return unsubscribe;
   }, [form, resumeData, setResumeData]);
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control: form.control,
     name: "educations",
   });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIdx = fields.findIndex((field) => field.id === active.id);
+      const newIdx = fields.findIndex((field) => field.id === over.id);
+      move(oldIdx, newIdx);
+
+      return arrayMove(fields, oldIdx, newIdx);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
@@ -55,14 +93,27 @@ export function EducationForm({ resumeData, setResumeData }: EditorFormProps) {
 
       <Form {...form}>
         <form className="space-y-3">
-          {fields.map((field, idx) => (
-            <EducationItem
-              key={field.id}
-              index={idx}
-              form={form}
-              remove={remove}
-            />
-          ))}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+          >
+            <SortableContext
+              items={fields}
+              strategy={verticalListSortingStrategy}
+            >
+              {fields.map((field, idx) => (
+                <EducationItem
+                  id={field.id}
+                  key={field.id}
+                  index={idx}
+                  form={form}
+                  remove={remove}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
           <div className="flex justify-center">
             <Button
               type="button"
@@ -88,14 +139,37 @@ interface EducationItemsProps {
   form: UseFormReturn<EducationValues>;
   index: number;
   remove: (index: number) => void;
+  id: string;
 }
 
-function EducationItem({ form, index, remove }: EducationItemsProps) {
+function EducationItem({ form, index, remove, id }: EducationItemsProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
   return (
-    <div className="space-y-3 rounded-md border bg-background p-3">
+    <div
+      className={cn(
+        "space-y-3 rounded-md border bg-background p-3",
+        isDragging
+          ? "relative z-50 cursor-grab shadow-xl focus:outline-none"
+          : "",
+      )}
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+    >
       <div className="flex justify-between gap-2">
         <span className="font-semibold">Education {index + 1}</span>
-        <GripHorizontal className="active::cursor-grabbing size-5 cursor-grab" />
+        <GripHorizontal
+          {...attributes}
+          {...listeners}
+          className="size-5 cursor-grab active:cursor-grabbing"
+        />
       </div>
 
       <FormField
