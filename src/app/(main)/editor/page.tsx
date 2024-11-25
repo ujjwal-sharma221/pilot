@@ -1,14 +1,34 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
+import { LoaderCircle } from "lucide-react";
+import { auth } from "@clerk/nextjs/server";
 
 import { ResumeEditor } from "./_components/resume-editor";
-import { LoaderCircle } from "lucide-react";
+import prisma from "@/lib/db";
+import { redirect } from "next/navigation";
+import { resumeDataInclude } from "@/lib/types/db-types";
+
+interface EditorPageProps {
+  searchParams: Promise<{ resumeId?: string }>;
+}
 
 export const metadata: Metadata = {
   title: "Design your resume",
 };
 
-const EditorPage = () => {
+const EditorPage = async ({ searchParams }: EditorPageProps) => {
+  const { userId } = await auth();
+  if (!userId) redirect("/");
+
+  const { resumeId } = await searchParams;
+
+  const resumeToEdit = resumeId
+    ? await prisma.resume.findFirst({
+        where: { id: resumeId, userId },
+        include: resumeDataInclude,
+      })
+    : null;
+
   return (
     <div>
       <Suspense
@@ -18,7 +38,7 @@ const EditorPage = () => {
           </div>
         }
       >
-        <ResumeEditor />
+        <ResumeEditor resumeToEdit={resumeToEdit} />
       </Suspense>
     </div>
   );

@@ -9,15 +9,22 @@ import FormBreadcrumbs from "./form-breadcrumbs";
 import { Footer } from "./footer";
 import { ResumeValues } from "@/lib/schemas/validatio-schema";
 import { ResumePreviewSection } from "./resume-preview-section";
-import { cn } from "@/lib/utils";
+import { cn, mapToResumeValues } from "@/lib/utils";
 import { useAutoSaveResume } from "./use-autosave-resume";
 import { useUnloadWarning } from "@/hooks/use-unload-warning";
+import { ResumeServerData } from "@/lib/types/db-types";
 
-export function ResumeEditor() {
+interface ResumeEditorProps {
+  resumeToEdit: ResumeServerData | null;
+}
+
+export function ResumeEditor({ resumeToEdit }: ResumeEditorProps) {
   const searchParams = useSearchParams();
   const currentStep = searchParams.get("step") || Steps[0].key;
 
-  const [resumeData, setResumeData] = useState<ResumeValues>({});
+  const values = resumeToEdit ? mapToResumeValues(resumeToEdit) : {};
+
+  const [resumeData, setResumeData] = useState<ResumeValues>(values);
   const [resumePreview, setShowResumePreview] = useState(false);
 
   const { isSaving, hasUnsavedChanges } = useAutoSaveResume(resumeData);
