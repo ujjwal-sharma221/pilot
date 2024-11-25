@@ -22,7 +22,7 @@ export function LoadingButton({
     >
       {loading ? (
         <TextLoop className="">
-          {"Generating your AI summary"}
+          {"Processing"}
           {"This may take some time"}
         </TextLoop>
       ) : (
