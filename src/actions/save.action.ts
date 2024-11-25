@@ -21,8 +21,6 @@ export async function saveResume(values: ResumeValues) {
     throw new Error("User not authenticated");
   }
 
-  // TODO: Check resume count for non-premium users
-
   const existingResume = id
     ? await prisma.resume.findUnique({ where: { id, userId } })
     : null;

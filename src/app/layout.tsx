@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 
 import "./globals.css";
 
@@ -19,7 +20,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${font.className} antialiased`}>{children}</body>
+        <body className={`${font.className} antialiased`}>
+          {children}
+          <Toaster closeButton position="top-right" theme="system" />
+        </body>
       </html>
     </ClerkProvider>
   );

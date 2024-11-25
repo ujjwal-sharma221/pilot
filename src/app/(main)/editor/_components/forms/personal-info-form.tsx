@@ -26,7 +26,6 @@ export function PersonalInfoForm({
     resolver: zodResolver(peronsalInfoSchema),
     defaultValues: {
       firstName: resumeData.firstName || "",
-      location: resumeData.location || "",
       jobTitle: resumeData.jobTitle || "",
       city: resumeData.city || "",
       lastName: resumeData.lastName || "",

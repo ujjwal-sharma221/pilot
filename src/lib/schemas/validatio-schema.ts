@@ -21,7 +21,6 @@ export const peronsalInfoSchema = z.object({
     ),
   firstName: optionalString,
   lastName: optionalString,
-  location: optionalString,
   jobTitle: optionalString,
   city: optionalString,
   country: optionalString,
