@@ -22,7 +22,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${font.className} antialiased`}>
           {children}
-          <Toaster closeButton position="top-right" theme="system" />
+          <Toaster closeButton position="top-right" />
         </body>
       </html>
     </ClerkProvider>
