@@ -42,7 +42,7 @@ const ResumePage = async () => {
       </Button>
       <div className="space-y-1">
         <h1 className="text-3xl font-semibold">Your Resumes</h1>
-        <p>{totalCount}</p>
+        <p>({totalCount})</p>
       </div>
       <div className="sm:grid-col-2 grid w-full gap-3 md:grid-cols-3 lg:grid-cols-4">
         {resumes.map((res) => (
