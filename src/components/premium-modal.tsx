@@ -1,6 +1,8 @@
 "use client";
 
 import { BadgeCheck } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import {
   PremiumFeatures,
@@ -9,12 +11,32 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import usePremiumModal from "@/hooks/use-premium-modal";
+import { createCheckoutSession } from "@/actions/stripe.checkout.action";
 
 export function PremiumModal() {
   const { open, setOpen } = usePremiumModal();
+  const [loading, setLoading] = useState(false);
+
+  const handlePremiumClick = async (priceId: string) => {
+    try {
+      setLoading(true);
+      const redirectUrl = await createCheckoutSession(priceId);
+      window.location.href = redirectUrl;
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        if (!loading) setOpen(open);
+      }}
+    >
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle className="font-bold">Pilot Pro</DialogTitle>
@@ -31,7 +53,16 @@ export function PremiumModal() {
                   </li>
                 ))}
               </ul>
-              <Button className="bg-black" variant="gooeyLeft">
+              <Button
+                disabled={loading}
+                onClick={() =>
+                  handlePremiumClick(
+                    process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_MONTHLY!,
+                  )
+                }
+                className="bg-black"
+                variant="gooeyLeft"
+              >
                 Get Premium
               </Button>
             </div>
@@ -48,6 +79,12 @@ export function PremiumModal() {
                 ))}
               </ul>
               <Button
+                disabled={loading}
+                onClick={() =>
+                  handlePremiumClick(
+                    process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_PLUS_MONTHLY!,
+                  )
+                }
                 variant="gooeyLeft"
                 className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white"
               >
