@@ -1,13 +1,11 @@
 import { Metadata } from "next";
-import Link from "next/link";
-import { FilePlus } from "lucide-react";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
-import { Button } from "@/components/ui/button";
 import prisma from "@/lib/db";
 import { resumeDataInclude } from "@/lib/types/db-types";
 import { ResumeItem } from "./_components/resume-item";
+import { CreateResumeButton } from "./_components/create-resume-button";
 
 export const metadata: Metadata = {
   title: "Your resumes",
@@ -34,12 +32,7 @@ const ResumePage = async () => {
 
   return (
     <main className="mx-auto w-full max-w-7xl space-y-6 px-3 py-6">
-      <Button className="mx-auto flex w-fit gap-2" asChild variant="gooeyLeft">
-        <Link href="/editor">
-          <FilePlus className="size-5" />
-          New Resume
-        </Link>
-      </Button>
+      <CreateResumeButton canCreate={false} />
       <div className="space-y-1">
         <h1 className="text-3xl font-semibold">Your Resumes</h1>
         <p>({totalCount})</p>

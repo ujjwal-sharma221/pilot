@@ -8,7 +8,7 @@ import { ImageSpotlight } from "@/components/image-spotlight";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center px-5 py-12 text-center md:flex-row md:text-start lg:gap-12">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4 px-5 py-12 text-center md:flex-row md:text-start lg:gap-12">
       <div className="max-w-prose space-y-3">
         <Image
           src={Logo}
