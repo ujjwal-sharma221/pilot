@@ -4,6 +4,7 @@ import Link from "next/link";
 import Logo from "@/assets/logo.svg";
 import { TextShimmer } from "@/components/text-shimmer";
 import { Button } from "@/components/ui/button";
+import { ImageSpotlight } from "@/components/image-spotlight";
 
 export default function Home() {
   return (
@@ -32,6 +33,7 @@ export default function Home() {
           <Link href="/resumes">Get Started</Link>
         </Button>
       </div>
+      <ImageSpotlight />
     </main>
   );
 }
