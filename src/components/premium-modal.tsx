@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import usePremiumModal from "@/hooks/use-premium-modal";
 import { createCheckoutSession } from "@/actions/stripe.checkout.action";
+import { env } from "@/env";
 
 export function PremiumModal() {
   const { open, setOpen } = usePremiumModal();
@@ -57,7 +58,7 @@ export function PremiumModal() {
                 disabled={loading}
                 onClick={() =>
                   handlePremiumClick(
-                    process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_MONTHLY!,
+                    env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_MONTHLY,
                   )
                 }
                 className="bg-black"
@@ -82,7 +83,7 @@ export function PremiumModal() {
                 disabled={loading}
                 onClick={() =>
                   handlePremiumClick(
-                    process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_PLUS_MONTHLY!,
+                    env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_PLUS_MONTHLY,
                   )
                 }
                 variant="gooeyLeft"
