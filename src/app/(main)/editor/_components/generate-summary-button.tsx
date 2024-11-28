@@ -5,6 +5,9 @@ import { toast } from "sonner";
 import { ResumeValues } from "@/lib/schemas/validatio-schema";
 import { LoadingButton } from "@/components/loading-button";
 import { generateSummary } from "@/actions/generate.summary.actions";
+import { useSubscriptionPlan } from "@/providers/subscripton-plan-provider";
+import usePremiumModal from "@/hooks/use-premium-modal";
+import { enableAITools } from "@/lib/permissions";
 
 interface GenerateSummarButtonProps {
   resumeData: ResumeValues;
@@ -16,8 +19,15 @@ export function GenerateSummaryButton({
   onSummaryGenerate,
 }: GenerateSummarButtonProps) {
   const [loading, setLoading] = useState(false);
+  const subscriptionType = useSubscriptionPlan();
+  const premiumModal = usePremiumModal();
 
   const handleClick = async () => {
+    if (!enableAITools(subscriptionType)) {
+      premiumModal.setOpen(true);
+      return;
+    }
+
     try {
       setLoading(true);
       const aiRes = await generateSummary(resumeData);

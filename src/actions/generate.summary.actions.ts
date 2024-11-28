@@ -1,12 +1,23 @@
 "use server";
 
+import { auth } from "@clerk/nextjs/server";
+
 import openAI from "@/lib/openai";
 import {
   GenerateSummaryInput,
   generateSummarySchema,
 } from "@/lib/schemas/Ai-schema";
+import { getUserSubscriptionPlan } from "@/lib/subscription";
+import { enableAITools } from "@/lib/permissions";
 
 export async function generateSummary(input: GenerateSummaryInput) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("User not authenticated");
+
+  const subscriptionType = await getUserSubscriptionPlan(userId);
+  if (!enableAITools(subscriptionType))
+    throw new Error("AI tools not allowed for this tier");
+
   const { jobTitle, workExperience, educations, skills } =
     generateSummarySchema.parse(input);
 
