@@ -5,6 +5,7 @@
  - Clone the repo
  - run `npm i` or `pnpm i ` etc
  - refer to copy.env for the env variables
+ - refer to deployed URL for the demo
 
 ## Technologies used
 
@@ -14,3 +15,4 @@
  - Neon Postgres as a Database provider
  - Open AI api for ai features
  - Stripe as checkout option
+ - Prisma as an ORM
